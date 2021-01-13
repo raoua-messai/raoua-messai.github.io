@@ -1,0 +1,86 @@
+<html>
+<head>
+<title>A Leaflet map!</title>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+
+<style>
+#map {width: 90%; height:600px; margin: auto; }
+</style>
+
+</head>
+
+<body>
+
+  <div id="map"></div>
+  
+<script>
+
+  // Initialiser la carte
+    
+var map = L.map('map', {
+                 center: [48.11, -1.66],
+                 zoom: 13 });
+    
+// Fonds de carte
+  
+var baselayers = {
+     OSM: L.tileLayer('http://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {attribution: '&copy; Openstreetmap France | &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+}),
+     ESRI: L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {attribution: '&copy;ESRI | '
+})}
+;baselayers.ESRI.addTo(map);
+  
+ // Ajout des stations de vélos
+  	
+var Velo =  $.getJSON("https://data.rennesmetropole.fr/explore/dataset/topologie-des-stations-le-velo-star/download/?format=geojson&timezone=Europe/Berlin",
+function(data) {var ICON = L.icon({iconUrl: 'https://cdn4.iconfinder.com/data/icons/real-estate-line-1-1/256/Bikecycle_512x512-512.png',
+      iconSize: [30, 30]
+    });
+ 
+L.geoJson(data,{
+      pointToLayer: function(feature,latlng){
+      var marker = L.marker(latlng,{icon: ICON});
+      marker.bindPopup("<h2>Nom Station : " + feature.properties.nom  + 
+	  "<h3>Nb socles : " + feature.properties.nombreemplacementstheorique  + "<h3>Terminal CB :" + feature.properties.possedetpe  + " <img src='https://www.tourisme-rennes.com/uploads/elementor/thumbs/rennes-a-velo-star-ob6scl29aipjnmdxverhfm5wgxot850ncf8urruwkw.jpg' width='300px'/>");
+        return marker;}
+      }).addTo(map);
+  } 
+  ); 
+   
+	
+	// Ajout des parcs relais
+	
+	var parcrelais =  $.getJSON("https://data.rennesmetropole.fr/explore/dataset/etat-des-parcs-relais-du-reseau-star-en-temps-reel/download/?format=geojson&timezone=Europe/Berlin",
+function(data) {var ICON = L.icon({iconUrl: 'https://media.lyon-france.com/1000x1000/544025/629405.jpg',
+      iconSize: [30, 30]
+    });
+
+L.geoJson(data,{
+      pointToLayer: function(feature,latlng){
+      var marker = L.marker(latlng,{icon: ICON});
+      marker.bindPopup("<h1>" + feature.properties.nom + '<br/>' + 
+	  "<h2>Nb de places :" + feature.properties.capaciteactuelle );
+        return marker;}
+      }).addTo(map);
+  } 
+  ); 
+		
+	
+	
+   // Selecteur de fonds de carte
+  
+ L.control.layers(baselayers).addTo(map);
+  
+  // Echelle cartographique
+  
+L.control.scale().addTo(map);             
+	
+
+</script>
+  
+</body>
+</html>
