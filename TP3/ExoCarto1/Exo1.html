@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+
+<h1>Exercice 1</h1>
+<h2>Partie 1</h2>
+
+<canvas id="myCanvas" width="700" height="700"
+style="border:1px solid #d3d3d3;">
+Your browser does not support the HTML5 canvas tag.
+</canvas>
+
+
+
+<script>
+window.onload = function() {
+    var canvas = document.getElementById("myCanvas");
+    var ctx = canvas.getContext("2d");
+    var img =new Image();
+img.src ="../../img/ciel.jpg";
+  img.onload = function (e)
+ { ctx.drawImage(img, 0, 0, 700,700);
+
+  let box = canvas.getContext('2d');
+let circleWindow = canvas.getContext('2d');
+
+//create a circle window
+circleWindow.beginPath();
+circleWindow.fillStyle = 'yellow';
+circleWindow.arc(70, 100, 50, 0, Math.PI * 2, true);
+circleWindow.fill();
+
+
+// Wall
+ctx.strokeRect(75, 550, 150, 110);
+
+// Door
+ctx.fillRect(130, 600, 40, 60);
+let roof = canvas.getContext('2d');
+// Roof
+roof .beginPath();
+roof .moveTo(150, 450); 
+roof .lineTo(60, 550);
+roof .lineTo(245, 550); 
+roof.fillStyle = 'red';
+roof .closePath();
+roof .stroke();
+ }
+};
+</script>
+
+<h2>Partie 2</h2>
+
+<svg width="560" height="277">
+  
+
+  <rect id="sky" fill="blue" width="560" height="277"/>
+    <circle id="sun" fill="yellow" cx="340" cy="60" r="20"/>
+    <script>
+        document.getElementById("sun").addEventListener('click', function() {
+           if(document.getElementById("sky").getAttribute('fill') == "#8E8282"){document.getElementById("ciel").setAttribute('fill','blue');} else 
+               if(document.getElementById("sky").getAttribute('fill') == "blue"){
+                   document.getElementById("sky").setAttribute('fill','#8E8282');
+               }
+        });
+    </script>
+    
+    <polygon fill="#691D1D" points="100,100 150,150 50,150" />
+    <polygon fill="#B2BE26" points="290,70 160,200 400,200" />
+    <polygon fill="#B2BE26" points="460,70 360,200 550,200" />
+    <rect fill="#B2BE26" width="620" height="120" x="0" y="190" />
+    <rect fill="#F1BC74" width="80" height="50" x="60" y="150" />
+    <rect fill="#0D1F22" width="20" height="30" x="100" y="170" onmouseover="evt.target.setAttribute('fill', 'orange');" onmouseout="evt.target.setAttribute('fill','0D1F22');"/>
+  
+</svg>
+
+</body>
+</html>
