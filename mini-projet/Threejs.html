@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>My first three.js app</title>
+		<style>
+			body { margin: 0; }
+		</style>
+	</head>
+	<body>
+		<script src="https://threejs.org/build/three.js"></script>
+		<script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/87/three.min.js"></script>
+
+		<script src="https://threejs.org//examples/js/loaders/GLTFLoader.js"></script>
+		<script>
+			var camera, scene, renderer, geometry, material, mesh, axisHelper, localToCameraAxesPlacement;
+
+init();
+animate();
+
+function init() {
+
+    scene = new THREE.Scene();
+
+    camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 10000);
+    camera.position.z = 500;
+    camera.up = new THREE.Vector3(0,0,1);
+    scene.add(camera);
+    
+    axisHelper = new THREE.AxisHelper( 0.1 )
+    localToCameraAxesPlacement = new THREE.Vector3(0.45 * camera.aspect,-0.45, -2); // make sure to update this on window resize
+		scene.add(axisHelper)
+
+    geometry = new THREE.CubeGeometry(200, 200, 200);
+    material = new THREE.MeshNormalMaterial();
+
+    mesh = new THREE.Mesh(geometry, material);
+    scene.add(mesh);
+
+    renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+
+    document.body.appendChild(renderer.domElement);
+
+}
+
+function animate() {
+
+    requestAnimationFrame(animate);
+    render();
+
+}
+
+var t = 0
+function render() {
+    t++
+    
+    camera.position.x = Math.cos(t/80) * 500
+    camera.position.y = Math.sin(t/80) * 500
+    camera.lookAt(mesh.position)
+    
+    camera.updateMatrixWorld()
+    var axesPlacement = camera.localToWorld(localToCameraAxesPlacement.clone())
+		axisHelper.position.copy(axesPlacement);
+
+    renderer.render(scene, camera);
+
+}
+		</script>
+	</body>
+</html>

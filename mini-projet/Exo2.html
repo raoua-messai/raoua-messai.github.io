@@ -6,150 +6,111 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Document</title>
     <style>
-      body {
-        display: flex;
-        flex-direction: column;
-        height: 100vh;
-      }
-
-      .compass {
-        position: relative;
-        width: 320px;
-        height: 320px;
-        border-radius: 50%;
-        box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-        margin: auto;
-      }
-
-      .compass > .arrow {
-        position: absolute;
-        width: 0;
-        height: 0;
-        top: -20px;
-        left: 50%;
-        transform: translateX(-50%);
-        border-style: solid;
-        border-width: 30px 20px 0 20px;
-        border-color: red transparent transparent transparent;
-        z-index: 1;
-      }
-
-      .compass > .compass-circle,
-      .compass > .my-point {
-        position: absolute;
-        width: 90%;
-        height: 90%;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        transition: transform 0.1s ease-out;
-        background: url(https://purepng.com/public/uploads/large/purepng.com-compasscompassinstrumentnavigationcardinal-directionspointsdiagram-1701527842316onq7x.png)
-          center no-repeat;
-        background-size: contain;
-      }
-
-      .compass > .my-point {
-        opacity: 0;
-        width: 20%;
-        height: 20%;
-        background: rgb(8, 223, 69);
-        border-radius: 50%;
-        transition: opacity 0.5s ease-out;
-      }
-
-      .start-btn {
-        margin-bottom: auto;
-      }
+     .main {
+  height: 100vh;
+  background-color: black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
     </style>
   </head>
   <body>
-    <div class="compass">
-      <div class="arrow"></div>
-      <div class="compass-circle"></div>
-      <div class="my-point"></div>
-    </div>
-    <button class="start-btn">Start compass</button>
+    <div class="main">
+        <svg id="compass" width="300" height="300" xmlns="http://www.w3.org/2000/svg">
+        </svg>
+      </div>
   </body>
   <script>
-    const compassCircle = document.querySelector(".compass-circle");
-    const myPoint = document.querySelector(".my-point");
-    const startBtn = document.querySelector(".start-btn");
-    const isIOS =
-      navigator.userAgent.match(/(iPod|iPhone|iPad)/) &&
-      navigator.userAgent.match(/AppleWebKit/);
+   var svgNS = "http://www.w3.org/2000/svg";
+var svg = document.getElementById("compass");
 
-    function init() {
-      startBtn.addEventListener("click", startCompass);
-      navigator.geolocation.getCurrentPosition(locationHandler);
+var pointer = document.createElementNS(svgNS, "polygon");
+pointer.setAttributeNS(null, "points", "150,0 155,12 145,12");
+pointer.setAttributeNS(null, "fill", "red");
+svg.appendChild(pointer);
 
-      if (!isIOS) {
-        window.addEventListener("deviceorientationabsolute", handler, true);
-      }
+var c = document.createElementNS(svgNS, "circle");
+c.setAttributeNS(null, "cx", 150);
+c.setAttributeNS(null, "cy", 150);
+c.setAttributeNS(null, "r", 20);
+c.setAttributeNS(null, "fill", "white");
+c.setAttributeNS(null, "fill-opacity", 0.1);
+svg.appendChild(c);
+
+drawCenterLine(150, 100, 150, 200);
+drawCenterLine(100, 150, 200, 150);
+drawCardinalDirection(143, 72, "N");
+drawCardinalDirection(228, 158, "E");
+drawCardinalDirection(143, 242, "S");
+drawCardinalDirection(58, 158, "W");
+
+for (var i = 0; i < 360; i += 2) {
+  // draw degree lines
+  var s = "grey";
+  if (i == 0 || i % 30 == 0) {
+    w = 3;
+    s = "white";
+    y2 = 50;
+  } else {
+    w = 1;
+    y2 = 45;
+  }
+
+  var l1 = document.createElementNS(svgNS, "line");
+  l1.setAttributeNS(null, "x1", 150);
+  l1.setAttributeNS(null, "y1", 30);
+  l1.setAttributeNS(null, "x2", 150);
+  l1.setAttributeNS(null, "y2", y2);
+  l1.setAttributeNS(null, "stroke", s);
+  l1.setAttributeNS(null, "stroke-width", w);
+  l1.setAttributeNS(null, "transform", "rotate(" + i + ", 150, 150)");
+  svg.appendChild(l1);
+
+  // draw degree value every 30 degrees
+  if (i % 30 == 0) {
+    var t1 = document.createElementNS(svgNS, "text");
+    if (i > 100) {
+      t1.setAttributeNS(null, "x", 140);
+    } else if (i > 0) {
+      t1.setAttributeNS(null, "x", 144);
+    } else {
+      t1.setAttributeNS(null, "x", 147);
     }
+    t1.setAttributeNS(null, "y", 24);
+    t1.setAttributeNS(null, "font-size", "11px");
+    t1.setAttributeNS(null, "font-family", "Helvetica");
+    t1.setAttributeNS(null, "fill", "grey");
+    t1.setAttributeNS(null, "style", "letter-spacing:1.0");
+    t1.setAttributeNS(null, "transform", "rotate(" + i + ", 150, 150)");
+    var textNode = document.createTextNode(i);
+    t1.appendChild(textNode);
+    svg.appendChild(t1);
+  }
+}
 
-    function startCompass() {
-      if (isIOS) {
-        DeviceOrientationEvent.requestPermission()
-          .then((response) => {
-            if (response === "granted") {
-              window.addEventListener("deviceorientation", handler, true);
-            } else {
-              alert("has to be allowed!");
-            }
-          })
-          .catch(() => alert("not supported"));
-      }
-    }
+function drawCenterLine(x1, y1, x2, y2) {
+  var centreLineHorizontal = document.createElementNS(svgNS, "line");
+  centreLineHorizontal.setAttributeNS(null, "x1", x1);
+  centreLineHorizontal.setAttributeNS(null, "y1", y1);
+  centreLineHorizontal.setAttributeNS(null, "x2", x2);
+  centreLineHorizontal.setAttributeNS(null, "y2", y2);
+  centreLineHorizontal.setAttributeNS(null, "stroke", "grey");
+  centreLineHorizontal.setAttributeNS(null, "stroke-width", 1);
+  centreLineHorizontal.setAttributeNS(null, "stroke-opacity", 0.5);
+  svg.appendChild(centreLineHorizontal);
+}
 
-    function handler(e) {
-      compass = e.webkitCompassHeading || Math.abs(e.alpha - 360);
-      compassCircle.style.transform = `translate(-50%, -50%) rotate(${-compass}deg)`;
-
-      
-      if (
-        (pointDegree < Math.abs(compass) &&
-          pointDegree + 15 > Math.abs(compass)) ||
-        pointDegree > Math.abs(compass + 15) ||
-        pointDegree < Math.abs(compass)
-      ) {
-        myPoint.style.opacity = 0;
-      } else if (pointDegree) {
-        myPoint.style.opacity = 1;
-      }
-    }
-
-    let pointDegree;
-
-    function locationHandler(position) {
-      const { latitude, longitude } = position.coords;
-      pointDegree = calcDegreeToPoint(latitude, longitude);
-
-      if (pointDegree < 0) {
-        pointDegree = pointDegree + 360;
-      }
-    }
-
-    function calcDegreeToPoint(latitude, longitude) {
-     
-      const point = {
-        lat: 21.422487,
-        lng: 39.826206
-      };
-
-      const phiK = (point.lat * Math.PI) / 180.0;
-      const lambdaK = (point.lng * Math.PI) / 180.0;
-      const phi = (latitude * Math.PI) / 180.0;
-      const lambda = (longitude * Math.PI) / 180.0;
-      const psi =
-        (180.0 / Math.PI) *
-        Math.atan2(
-          Math.sin(lambdaK - lambda),
-          Math.cos(phi) * Math.tan(phiK) -
-            Math.sin(phi) * Math.cos(lambdaK - lambda)
-        );
-      return Math.round(psi);
-    }
-
-    init();
+function drawCardinalDirection(x, y, displayText) {
+  var direction = document.createElementNS(svgNS, "text");
+  direction.setAttributeNS(null, "x", x);
+  direction.setAttributeNS(null, "y", y);
+  direction.setAttributeNS(null, "font-size", "20px");
+  direction.setAttributeNS(null, "font-family", "Helvetica");
+  direction.setAttributeNS(null, "fill", "white");
+  var textNode = document.createTextNode(displayText);
+  direction.appendChild(textNode);
+  svg.appendChild(direction);
+}
   </script>
 </html>
