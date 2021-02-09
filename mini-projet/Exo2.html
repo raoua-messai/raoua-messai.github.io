@@ -105,7 +105,7 @@
       compass = e.webkitCompassHeading || Math.abs(e.alpha - 360);
       compassCircle.style.transform = `translate(-50%, -50%) rotate(${-compass}deg)`;
 
-      // ±15 degree
+      
       if (
         (pointDegree < Math.abs(compass) &&
           pointDegree + 15 > Math.abs(compass)) ||
@@ -130,11 +130,8 @@
     }
 
     function calcDegreeToPoint(latitude, longitude) {
-      // Qibla geolocation
-      const point = {
-        lat: 21.422487,
-        lng: 39.826206
-      };
+     
+      
 
       const phiK = (point.lat * Math.PI) / 180.0;
       const lambdaK = (point.lng * Math.PI) / 180.0;
