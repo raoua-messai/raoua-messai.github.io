@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta charset="utf-8">
-		<title>Exercice 2</title>
+		<title>Exercice 1</title>
 		<style>
 		html, body {
   width: 100%;
@@ -10,18 +10,18 @@
   margin: 0;
   padding: 0;
   overflow: hidden;
-  background-color: #eee;
+  background-color:floralwhite;
 }
 		</style>
 	</head>
 	<body>
-        <canvas id = "c"></canvas>
+        <h1>Exerice 1 HTML Compass</h1>
+        <canvas id = "canvas"></canvas>
         <script>
-            var c = document.getElementById("c");
+            var c = document.getElementById("canvas");
 var ctx = c.getContext("2d");
 var width = window.innerWidth,
   height = window.innerHeight;
-//need to figure out how to set the angle to the north angle 
 var angle = 0,
   text = "N";
 
@@ -79,7 +79,4 @@ draw();
 window.addEventListener("deviceorientation", function(event) {
   angle = event.alpha;
 });
-// /*window.ondeviceorientationabsolute = function(event) {
-//   angle = event.alpha;
-// };*/
-//         </script>
+      </script>
