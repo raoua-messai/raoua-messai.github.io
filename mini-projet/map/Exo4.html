@@ -19,10 +19,39 @@
 	var map = new L.Map('map', {zoom: 12, center: new L.latLng([42.5,12.5]) });
 
 	map.addLayer(new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'));	
+	var current_position, current_accuracy;
+	function onLocationFound(e) {
+      // if position defined, then remove the existing position marker and accuracy circle from the map
+      if (current_position) {
+          map.removeLayer(current_position);
+          map.removeLayer(current_accuracy);
+      }
 
+      var radius = e.accuracy / 2;
+
+      current_position = L.marker(e.latlng).addTo(map)
+        .bindPopup("You are within " + radius + " meters from this point").openPopup();
+
+      current_accuracy = L.circle(e.latlng, radius).addTo(map);
+    }
+
+	function onLocationError(e) {
+      alert(e.message);
+    }
+
+    map.on('locationfound', onLocationFound);
+    map.on('locationerror', onLocationError);
+
+    // wrap map.locate in a function    
+    function locate() {
+      map.locate({setView: true, maxZoom: 16});
+    }
+	setInterval(locate, 3000);
 	var comp = new L.Control.Compass({autoActive: true, showDigit:true});
 
 	map.addControl(comp);
+
+
 
 </script>
 
